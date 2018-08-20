@@ -1,21 +1,54 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import axios from 'axios';
+import Questions from './components/Questions/Questions'
 
 class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+  constructor(props) {
+    super(props);
+    this.state = { 
+      questionsList: []
+     }
+     this.handleGetQuestions = this.handleGetQuestions.bind(this);
+  }
+
+  componentDidMount() {
+    axios.get('https://opentdb.com/api.php?amount=10')
+    .then(resp => {
+      return axios.post('/api/questionslist', {resp})
+        .then(res => {
+          this.setState({
+            questionsList: res.data
+          })
+          
+        })
+    })
+  }
+
+  handleGetQuestions() {
+    axios.get('https://opentdb.com/api.php?amount=10')
+      .then(resp => {
+        return axios.post('/api/questionslist', {resp})
+          .then(res => {
+            this.setState({
+              questionsList: res.data
+            })
+            
+          })
+      })
+  }
+
+  render() { 
+    let { questionsList } = this.state;
+    console.log(this.state.questionsList);
+    
+    return ( 
+      <div>
+      <Questions questionsList={questionsList} />
       </div>
-    );
+     );
   }
 }
-
+ 
 export default App;
